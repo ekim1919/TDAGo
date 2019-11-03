@@ -3,6 +3,7 @@ from sgfmill import sgf_moves
 
 from ripser import ripser
 from persim import plot_diagrams
+from persim import wasserstein, wasserstein_matching
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -52,48 +53,87 @@ class SGFProcessor: #Takes SGF files and converts to TDA-ready data
 
             return black_move_pos, white_move_pos
 
-#returns relevant dgms for matrix of stone positions
-def ripsfiltrator(move_pos):
+
+class TDATools: #REvise this later.
+
+    #returns relevant dgms for matrix of stone positions
+    @staticmethod
+    def filter_rips(move_pos):
         pdis = dist.squareform(dist.pdist(move_pos,'cityblock'))
         return ripser(pdis,distance_matrix=True)['dgms']
 
-def plot_move(move_number, processor):
+    @staticmethod
+    def match_wasserstein(dgms1, dgms2):
+        return wasserstein(dgms1,dgms2,matching=True)
+
+class Plotter:
+
+    def __init__(self, processor):
+        self.processor = processor
+
+
+    def plot_move(self, move_num):
+
+            plt.figure(figsize=(150,30))
+
+            black_move_pos, white_move_pos = (self.processor).process_sgf_file(move_num)
+
+            plt.subplot(331)
+            plt.xticks(np.arange(20))
+            plt.scatter(white_move_pos[:,0], white_move_pos[:,1], color='red')
+            plt.title('White Stone Positions')
+
+            white_dgms = TDATools.filter_rips(white_move_pos)
+
+            plt.subplot(332)
+            plt.title('White PH')
+            plot_diagrams(white_dgms)
+
+            #plt.subplot(336)
+            #total_board
+            #plt.scatter(total_board[:,0], total_board[:,1])
+            #plt.title('Total Board')
+
+            plt.subplot(337)
+            plt.xticks(np.arange(20))
+            plt.scatter(black_move_pos[:,0], black_move_pos[:,1], color='black')
+            plt.title('Black Stone Positions')
+
+            black_dgms = TDATools.filter_rips(black_move_pos)
+
+            plt.subplot(338)
+            plt.title('Black PH')
+            plot_diagrams(black_dgms)
+
+            plt.show()
+
+    #Plots wasserstein matching between two consec moves for both colors
+    def plot_wass_match(self, move_num):
 
         plt.figure(figsize=(150,30))
 
-        black_move_pos, white_move_pos = processor.process_sgf_file(move_number)
+        tda = TDATools() #Terrible
 
-        plt.subplot(331)
-        plt.xticks(np.arange(20))
-        plt.scatter(white_move_pos[:,0], white_move_pos[:,1], color='red')
-        plt.title('White Stone Positions')
+        black_move_pos1, white_move_pos1 = (self.processor).process_sgf_file(move_num)
+        black_move_pos2, white_move_pos2 = (self.processor).process_sgf_file(move_num+1)
 
-        white_dgms = ripsfiltrator(white_move_pos)
+        white_wdist, (white_match,wD) = TDATools.match_wasserstein(white_move_pos1,white_move_pos2)
+        black_wdist, (black_match,bD) = TDATools.match_wasserstein(black_move_pos1,black_move_pos2)
 
-        plt.subplot(332)
-        plt.title('White PH')
-        plot_diagrams(white_dgms)
+        plt.subplot(121)
+        wasserstein_matching(black_move_pos1,black_move_pos2,black_match,bD)
+        plt.title("Black Matching for Move %i to next"%move_num)
 
-        #plt.subplot(336)
-        #total_board
-        #plt.scatter(total_board[:,0], total_board[:,1])
-        #plt.title('Total Board')
-
-        plt.subplot(337)
-        plt.xticks(np.arange(20))
-        plt.scatter(black_move_pos[:,0], black_move_pos[:,1], color='black')
-        plt.title('Black Stone Positions')
-
-        black_dgms = ripsfiltrator(black_move_pos)
-
-        plt.subplot(338)
-        plt.title('Black PH')
-        plot_diagrams(black_dgms)
+        plt.subplot(122)
+        wasserstein_matching(white_move_pos1,white_move_pos2,white_match,wD)
+        plt.title("White Matching for Move %i to next"%move_num)
 
         plt.show()
 
+
 def main(argv):
-    plot_move(int(argv[1]), SGFProcessor(argv[0]))
+    plotter = Plotter(SGFProcessor(argv[0]))
+    plotter.plot_wass_match(int(argv[1]))
 
 
 if __name__ == '__main__':
