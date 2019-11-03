@@ -51,7 +51,10 @@ class SGFProcessor: #Takes SGF files and converts to TDA-ready data
             black_move_pos = np.asarray(black_move_pos).reshape(-1,2)
             white_move_pos = np.asarray(white_move_pos).reshape(-1,2)
 
-            return black_move_pos, white_move_pos
+            black_dgms = TDATools.filter_rips(black_move_pos)
+            white_dgms = TDATools.filter_rips(white_move_pos)
+
+            return black_move_pos, white_move_pos, black_dgms, white_dgms
 
 
 class TDATools: #REvise this later.
@@ -76,30 +79,26 @@ class Plotter:
 
             plt.figure(figsize=(150,30))
 
-            black_move_pos, white_move_pos = (self.processor).process_sgf_file(move_num)
+            black_stones, white_stones, black_dgms, white_dgms = (self.processor).process_sgf_file(move_num)
 
             plt.subplot(331)
             plt.xticks(np.arange(20))
-            plt.scatter(white_move_pos[:,0], white_move_pos[:,1], color='red')
+            plt.scatter(white_stones[:,0], white_stones[:,1], color='red')
             plt.title('White Stone Positions')
-
-            white_dgms = TDATools.filter_rips(white_move_pos)
 
             plt.subplot(332)
             plt.title('White PH')
             plot_diagrams(white_dgms)
 
-            #plt.subplot(336)
-            #total_board
-            #plt.scatter(total_board[:,0], total_board[:,1])
-            #plt.title('Total Board')
+            plt.subplot(336)
+            plt.scatter(black_stones[:,0], black_stones[:,1],color='black')
+            plt.scatter(white_stones[:,0], white_stones[:,1], color='red')
+            plt.title('Total Board')
 
             plt.subplot(337)
             plt.xticks(np.arange(20))
-            plt.scatter(black_move_pos[:,0], black_move_pos[:,1], color='black')
+            plt.scatter(black_stones[:,0], black_stones[:,1], color='black')
             plt.title('Black Stone Positions')
-
-            black_dgms = TDATools.filter_rips(black_move_pos)
 
             plt.subplot(338)
             plt.title('Black PH')
@@ -110,22 +109,17 @@ class Plotter:
     #Plots wasserstein matching between two consec moves for both colors
     def plot_wass_match(self, move_num):
 
-        black_move_pos1, white_move_pos1 = (self.processor).process_sgf_file(move_num)
-        black_move_pos2, white_move_pos2 = (self.processor).process_sgf_file(move_num+1)
+        plt.figure(figsize=(150,30))
 
-        wdgms1, wdgms2 = TDATools.filter_rips(white_move_pos1), TDATools.filter_rips(white_move_pos2)
-        bdgms1, bdgms2 = TDATools.filter_rips(black_move_pos1), TDATools.filter_rips(black_move_pos2)
+        _,_, bdgms1, wdgms1 = (self.processor).process_sgf_file(move_num)
+        #_,_, bdgms2, wdgms2 = (self.processor).process_sgf_file(move_num+20)
 
-        white_wdist, (white_match,wD) = TDATools.match_wasserstein(wdgms1,wdgms2)
-        black_wdist, (black_match,bD) = TDATools.match_wasserstein(bdgms1,bdgms2)
-
-        plt.subplot(121)
-        wasserstein_matching(bdgms1[1],bdgms2[1],black_match,bD)
-        plt.title("Black Matching for Move %i to next"%move_num)
+        wdist, (match,_) = TDATools.match_wasserstein(wdgms1,bdgms1)
 
         plt.subplot(122)
-        wasserstein_matching(wdgms1[1],wdgms2[1],white_match,wD)
-        plt.title("White Matching for Move %i to next"%move_num)
+        wasserstein_matching(wdgms1[1], bdgms1[1], match)
+        plt.title("Matching for Move %i"%move_num)
+        print(wdist)
 
         plt.show()
 
