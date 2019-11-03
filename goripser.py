@@ -64,7 +64,7 @@ class TDATools: #REvise this later.
 
     @staticmethod
     def match_wasserstein(dgms1, dgms2):
-        return wasserstein(dgms1,dgms2,matching=True)
+        return wasserstein(dgms1[1],dgms2[1],matching=True)
 
 class Plotter:
 
@@ -110,22 +110,21 @@ class Plotter:
     #Plots wasserstein matching between two consec moves for both colors
     def plot_wass_match(self, move_num):
 
-        plt.figure(figsize=(150,30))
-
-        tda = TDATools() #Terrible
-
         black_move_pos1, white_move_pos1 = (self.processor).process_sgf_file(move_num)
         black_move_pos2, white_move_pos2 = (self.processor).process_sgf_file(move_num+1)
 
-        white_wdist, (white_match,wD) = TDATools.match_wasserstein(white_move_pos1,white_move_pos2)
-        black_wdist, (black_match,bD) = TDATools.match_wasserstein(black_move_pos1,black_move_pos2)
+        wdgms1, wdgms2 = TDATools.filter_rips(white_move_pos1), TDATools.filter_rips(white_move_pos2)
+        bdgms1, bdgms2 = TDATools.filter_rips(black_move_pos1), TDATools.filter_rips(black_move_pos2)
+
+        white_wdist, (white_match,wD) = TDATools.match_wasserstein(wdgms1,wdgms2)
+        black_wdist, (black_match,bD) = TDATools.match_wasserstein(bdgms1,bdgms2)
 
         plt.subplot(121)
-        wasserstein_matching(black_move_pos1,black_move_pos2,black_match,bD)
+        wasserstein_matching(bdgms1[1],bdgms2[1],black_match,bD)
         plt.title("Black Matching for Move %i to next"%move_num)
 
         plt.subplot(122)
-        wasserstein_matching(white_move_pos1,white_move_pos2,white_match,wD)
+        wasserstein_matching(wdgms1[1],wdgms2[1],white_match,wD)
         plt.title("White Matching for Move %i to next"%move_num)
 
         plt.show()
