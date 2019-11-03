@@ -50,18 +50,12 @@ class SGFProcessor: #Takes SGF files and converts to TDA-ready data
             black_move_pos = np.asarray(black_move_pos).reshape(-1,2)
             white_move_pos = np.asarray(white_move_pos).reshape(-1,2)
 
-            print(black_move_pos)
-
             return black_move_pos, white_move_pos
-
-        black_pdis = dist.squareform(dist.pdist(black_move_pos,'cityblock'))
-        black_dgms = ripser(black_pdis,distance_matrix=True)['dgms']
 
 #returns relevant dgms for matrix of stone positions
 def ripsfiltrator(move_pos):
         pdis = dist.squareform(dist.pdist(move_pos,'cityblock'))
         return ripser(pdis,distance_matrix=True)['dgms']
-
 
 def plot_move(move_number, processor):
 
