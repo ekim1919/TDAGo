@@ -10,7 +10,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 import scipy.spatial.distance as dist
 
-
 class SGFProcessor: #Takes SGF files and converts to TDA-ready data. Might be worth revamping this into becoming an iterator
 
     def __init__(self,pathname):
@@ -23,7 +22,6 @@ class SGFProcessor: #Takes SGF files and converts to TDA-ready data. Might be wo
             sgf_game = sgf.Sgf_game.from_bytes(sgf_src)
         except:
             raise Exception("SGF file format error")
-
         try:
             _ , self.play_seq = sgf_moves.get_setup_and_moves(sgf_game)
         except:
@@ -53,47 +51,8 @@ class SGFProcessor: #Takes SGF files and converts to TDA-ready data. Might be wo
                 white_dgms = TDATools.filter_rips(white_move_pos)
 
                 if num >= start_num: #Don't start iterating until we get to move of interest.
-                    yield (black_move_pos, white_move_pos), (black_dgms, white_dgms)
+                    yield (black_move_pos, white_move_pos), (black_dgms, white_dgms) #Given in double tuple format with board and dgms positions in that order
 
-
-
-class Analytics: #Will work for now. Generalize this to put analysis plots into specific directories
-
-    def __init__(self,pathname,start_num=0,finish_num=400):
-        self.proc = SGFProcessor(pathname)
-        self.plotdir = "/playpen/ehkim/work/TDAGo/testplots/"
-        self.name = pathname[pathname.rfind('/')+1:]
-        self.start_num = start_num
-        self.finish_num = finish_num
-
-    def game_wdist(self):
-
-        val = []
-        for _, dgms in (self.proc).filter_game(start_num=self.start_num,finish_num=self.finish_num):
-            wdist, _ = TDATools.match_wasserstein(dgms[0],dgms[1])
-            val.append(wdist)
-
-        fig,ax = plt.subplots()
-        ax.plot(np.arange(self.start_num,
-                         ((self.proc).num_of_moves() if self.finish_num == 400 else (self.finish_num) + 1), 1)
-                         ,val)
-        ax.set(xlabel='Move #',ylabel='Wasserstein Dist',title="Plot Of WDist as " + self.name + " progresses")
-        plt.savefig(self.plotdir + self.name + ".png")
-
-    def  game_bdist(self):
-
-        val = []
-        for _, dgms in (self.proc).filter_game(start_num=self.start_num,finish_num=self.finish_num):
-            bdist, _ = TDATools.match_bottleneck(dgms[0],dgms[1])
-            val.append(bdist)
-
-        fig,ax = plt.subplots()
-        ax.plot(np.arange(self.start_num,
-                ((self.proc).num_of_moves() if self.finish_num == 400 else (self.finish_num) + 1)
-                ,1),val)
-
-        ax.set(xlabel='Move #',ylabel='Bottleneck Dist',title="Plot Of BDist as " + self.name + " progresses")
-        plt.savefig(self.plotdir + self.name + ".png")
 
 class TDATools: #Revise this later.
 
