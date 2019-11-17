@@ -8,7 +8,9 @@ from persim import bottleneck, bottleneck_matching
 import numpy as np
 import scipy.spatial.distance as dist
 
-class SGFProcessor: #Takes SGF files and converts to TDA-ready data. Might be worth revamping this into becoming an iterator
+from cachetools import cached, LRUCache
+
+class SGFProcessor:
 
     def __init__(self,pathname):
         self.pathname = pathname
@@ -25,10 +27,11 @@ class SGFProcessor: #Takes SGF files and converts to TDA-ready data. Might be wo
         except:
             raise Exception(str(e))
 
-    #Gives total number of moves in a game.
-    def num_of_moves(self):
+
+    def num_of_moves(self): #Gives total number of moves in a game.
         return len(self.play_seq)
 
+    @cached(cache=LRUCache(maxsize=1024))
     def filter_game(self, start_num, finish_num, stone_color=None):
 
             plays = self.play_seq[:finish_num] #Slice play list by desired move number
@@ -41,11 +44,11 @@ class SGFProcessor: #Takes SGF files and converts to TDA-ready data. Might be wo
             for (color, move), num in move_list:
                 row, col = move
                 if (color == 'b'):
-                    black_move_pos = np.append(black_move_pos,[[row,col]],axis=0)
+                    black_move_pos = np.append(black_move_pos,[[row,col]],axis=0) #Should be caching these results
                 else:
                     white_move_pos = np.append(white_move_pos,[[row,col]],axis=0)
 
-                black_dgms = TDATools.filter_rips(black_move_pos)
+                black_dgms = TDATools.filter_rips(black_move_pos) #Should be caching these results 
                 white_dgms = TDATools.filter_rips(white_move_pos)
 
                 if num >= start_num: #Don't start iterating until we get to move of interest.
