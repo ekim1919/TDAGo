@@ -2,12 +2,10 @@ from sgfmill import sgf
 from sgfmill import sgf_moves
 
 from ripser import ripser
-from persim import plot_diagrams
 from persim import wasserstein, wasserstein_matching
 from persim import bottleneck, bottleneck_matching
 
 import numpy as np
-import matplotlib.pyplot as plt
 import scipy.spatial.distance as dist
 
 class SGFProcessor: #Takes SGF files and converts to TDA-ready data. Might be worth revamping this into becoming an iterator
@@ -53,6 +51,31 @@ class SGFProcessor: #Takes SGF files and converts to TDA-ready data. Might be wo
                 if num >= start_num: #Don't start iterating until we get to move of interest.
                     yield (black_move_pos, white_move_pos), (black_dgms, white_dgms) #Given in double tuple format with board and dgms positions in that order
 
+class DistanceArray:
+
+    def __init__(self,pathname,start,finish):
+        self.start = start
+        self.finish = finish
+        self.proc = SGFProcessor(pathname)
+
+    def get_wass_array(self):
+        y = []
+        for _, dgms in (self.proc).filter_game(self.start,self.finish):
+            wdist, _ = TDATools.match_wasserstein(dgms[0],dgms[1])
+            y.append(wdist)
+
+        x = np.arange(self.start,
+                      min(self.proc.num_of_moves(),self.finish))
+        return x,y
+
+    def get_bottle_array(self):
+        y = []
+        for _, dgms in (self.proc).filter_game(start_num=self.start_num,finish_num=self.finish_num):
+            wdist, _ = TDATools.match_bottleneck(dgms[0],dgms[1])
+            y.append(wdist)
+        x = np.arange(self.start,
+                      min(self.proc.num_of_moves(),self.finish))
+        return x,y
 
 class TDATools: #Revise this later.
 

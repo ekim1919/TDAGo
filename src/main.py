@@ -1,4 +1,4 @@
-from plot import GameAnimator
+from plot import GameAnimator,Analytics
 
 import sys
 import os
@@ -15,7 +15,7 @@ def run_wass_routine(dir):
             sgf_files.append(os.path.join(dir,files)) #probably should create a routunes class to abstract his iteration stuff out
 
     for game_file_paths in sgf_files:
-        rip.Analytics(game_file_paths).game_wdist()
+        Analytics(game_file_paths).game_wdist()
 
 def test_anim_routine(file):
 
