@@ -1,11 +1,11 @@
-from plot import GameAnimator,Analytics
+from plot import *
 
 import sys
 import os
 
 def main(argv):
 
-    test_anim_routine(str(argv[0]))
+    test_scroll_routine(str(argv[0]))
 
 def run_wass_routine(dir):
 
@@ -19,8 +19,13 @@ def run_wass_routine(dir):
 
 def test_anim_routine(file):
 
-    ani = GameAnimator(file)
-    ani.animate()
+    GameAnimator(file).animate()
+
+
+def test_scroll_routine(file):
+
+    GameScroll(file).scroll()
+
 
 if __name__ == '__main__':
   main(sys.argv[1:])
@@ -33,4 +38,4 @@ if __name__ == '__main__':
 #Ideas
 #How to interpret H_1 points on DGMS? For example, if a point has a earlier,later birthtime vs earlier,later deathtime? How do we interpret this as properties of possible enclosed territory.
 #We can now start to add points to the white/black board to model obstructions to building territory. A good idea would be to find ways to create "meaningful" boards for analysis of specific advantage properties.
-#Research more about Go fighting strategies and early,late game caveats 
+#Research more about Go fighting strategies and early,late game caveats

@@ -36,7 +36,7 @@ class SGFProcessor: #Takes SGF files and converts to TDA-ready data. Might be wo
             black_move_pos = np.empty([0,2])
             white_move_pos = np.empty([0,2])
 
-            move_list = zip(plays, range(finish_num)) #Iteretor for sequence of moves and their indices
+            move_list = zip(plays, range(finish_num)) #Iterator for sequence of moves and their indices
 
             for (color, move), num in move_list:
                 row, col = move
