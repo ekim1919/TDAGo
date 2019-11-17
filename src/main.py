@@ -29,3 +29,8 @@ if __name__ == '__main__':
 #Animation routines
 #Persistence Diagrams?\
 #Go analysis features.
+
+#Ideas
+#How to interpret H_1 points on DGMS? For example, if a point has a earlier,later birthtime vs earlier,later deathtime? How do we interpret this as properties of possible enclosed territory.
+#We can now start to add points to the white/black board to model obstructions to building territory. A good idea would be to find ways to create "meaningful" boards for analysis of specific advantage properties.
+#Research more about Go fighting strategies and early,late game caveats 
