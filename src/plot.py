@@ -116,6 +116,10 @@ class GameAnimator: #animates the persistence diagrams and board to see how game
         self.black_dgms.set_title('Black PH')
 
         self.wdist = self.figure.add_subplot(325)
+        self.wdist.set_title("WDist Progression")
+        self.wdist.set_xlabel("Move #")
+        self.wdist.set_ylabel("WDist between White and Black")
+
         self.move_plot = self.figure.add_subplot(326)
         self.move_box = TextBox(self.move_plot,'Move #: ',0)
 
@@ -134,8 +138,8 @@ class GameAnimator: #animates the persistence diagrams and board to see how game
         (black_stones, white_stones), (black_dgms,white_dgms) = data_tup[0]
         num = data_tup[1]
 
-        self.white_board.scatter(white_stones[:,0], white_stones[:,1], color='white',s=50) #anything more efficient then scattering it every time?
-        self.black_board.scatter(black_stones[:,0], black_stones[:,1],color='black',s=50)
+        self.white_board.scatter(white_stones[:,0], white_stones[:,1], color='red',s=250) #anything more efficient then scattering it every time?
+        self.black_board.scatter(black_stones[:,0], black_stones[:,1],color='black',s=250)
 
         self.black_dgms = self.figure.add_subplot(324)
         plt.cla()
