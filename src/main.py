@@ -1,11 +1,14 @@
 from plot import *
 
+import warnings
+warnings.filterwarnings("ignore") #Ignore warnings for now
+
 import sys
 import os
 
 def main(argv):
 
-    test_scroll_routine(str(argv[0]))
+    test_anim_routine(str(argv[0]))
 
 def run_wass_routine(dir):
 
@@ -40,4 +43,4 @@ if __name__ == '__main__':
 #We can now start to add points to the white/black board to model obstructions to building territory. A good idea would be to find ways to create "meaningful" boards for analysis of specific advantage properties.
 #Research more about Go fighting strategies and early,late game caveats
 #Create a modular framework such that you have TDA-DATA -> plot modules -> customizable plot figure -> analysis interface
-#Create a caching scheme to cache all sequential computations and diagrams made. See cache-tools 
+#Create a caching scheme to cache all sequential computations and diagrams made. See cache-tools

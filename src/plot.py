@@ -1,9 +1,12 @@
 import os
 
+import matplotlib
 import matplotlib.pyplot as plt
 import matplotlib.animation as animate
-from matplotlib.widgets import Slider
+from matplotlib.widgets import Slider, TextBox
 import numpy as np
+
+matplotlib.use('webagg')
 
 from goripser import *
 from persim import plot_diagrams
@@ -92,12 +95,13 @@ class GameAnimator: #animates the persistence diagrams and board to see how game
     def __init__(self,pathname):
         self.pathname = pathname
         self.proc = SGFProcessor(pathname)
-        self.figure = plt.figure(figsize=(30,30))
+        self.figure = plt.figure(figsize=(25,25))
 
         self.white_board = self.figure.add_subplot(321)
         self.white_board.set_xticks(np.arange(20))
         self.white_board.set_yticks(np.arange(20))
         self.white_board.set_title('White Stone Positions')
+        self.__draw_board(self.white_board)
 
         self.white_dgms = self.figure.add_subplot(322)
         self.white_dgms.set_title('White PH')
@@ -106,20 +110,32 @@ class GameAnimator: #animates the persistence diagrams and board to see how game
         self.black_board.set_xticks(np.arange(20))
         self.black_board.set_yticks(np.arange(20))
         self.black_board.set_title('Black Stone Positions')
+        self.__draw_board(self.black_board)
 
         self.black_dgms = self.figure.add_subplot(324)
         self.black_dgms.set_title('Black PH')
 
         self.wdist = self.figure.add_subplot(325)
+        self.move_plot = self.figure.add_subplot(326)
+        self.move_box = TextBox(self.move_plot,'Move #: ',0)
 
         self.save_loc = PlotFSHandler(pathname).get_save_loc()
+
+    def __draw_board(self,ax):
+
+        for i in range(19):
+            ax.axhline(i,color="black")
+            ax.axvline(i,color="black")
+
+        ax.set_facecolor('burlywood')
+
 
     def update(self,data_tup,x,y,l):
         (black_stones, white_stones), (black_dgms,white_dgms) = data_tup[0]
         num = data_tup[1]
 
-        self.white_board.scatter(white_stones[:,0], white_stones[:,1], color='red') #anything more efficient then scattering it every time?
-        self.black_board.scatter(black_stones[:,0], black_stones[:,1],color='black')
+        self.white_board.scatter(white_stones[:,0], white_stones[:,1], color='white',s=50) #anything more efficient then scattering it every time?
+        self.black_board.scatter(black_stones[:,0], black_stones[:,1],color='black',s=50)
 
         self.black_dgms = self.figure.add_subplot(324)
         plt.cla()
@@ -132,6 +148,7 @@ class GameAnimator: #animates the persistence diagrams and board to see how game
         plot_diagrams(white_dgms)
 
         l.set_data(x[:num],y[:num])
+        self.move_box.set_val(num)
         return l,
 
     def animate(self):

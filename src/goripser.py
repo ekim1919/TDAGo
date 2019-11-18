@@ -7,8 +7,7 @@ from persim import bottleneck, bottleneck_matching
 
 import numpy as np
 import scipy.spatial.distance as dist
-
-from cachetools import cached, LRUCache
+from copy import copy
 
 class SGFProcessor:
 
@@ -27,28 +26,26 @@ class SGFProcessor:
         except:
             raise Exception(str(e))
 
-
     def num_of_moves(self): #Gives total number of moves in a game.
         return len(self.play_seq)
 
-    @cached(cache=LRUCache(maxsize=1024))
     def filter_game(self, start_num, finish_num, stone_color=None):
 
             plays = self.play_seq[:finish_num] #Slice play list by desired move number
 
+            move_list = zip(plays, range(finish_num)) #Iterator for sequence of moves and their indices
             black_move_pos = np.empty([0,2])
             white_move_pos = np.empty([0,2])
-
-            move_list = zip(plays, range(finish_num)) #Iterator for sequence of moves and their indices
 
             for (color, move), num in move_list:
                 row, col = move
                 if (color == 'b'):
-                    black_move_pos = np.append(black_move_pos,[[row,col]],axis=0) #Should be caching these results
+                    black_move_pos = np.append(black_move_pos,[[row,col]],axis=0)
                 else:
                     white_move_pos = np.append(white_move_pos,[[row,col]],axis=0)
 
-                black_dgms = TDATools.filter_rips(black_move_pos) #Should be caching these results 
+
+                black_dgms = TDATools.filter_rips(black_move_pos)
                 white_dgms = TDATools.filter_rips(white_move_pos)
 
                 if num >= start_num: #Don't start iterating until we get to move of interest.
