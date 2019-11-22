@@ -44,7 +44,6 @@ class SGFProcessor:
                 else:
                     white_move_pos = np.append(white_move_pos,[[row,col]],axis=0)
 
-
                 black_dgms = TDATools.filter_rips(black_move_pos)
                 white_dgms = TDATools.filter_rips(white_move_pos)
 

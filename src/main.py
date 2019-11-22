@@ -8,7 +8,7 @@ import os
 
 def main(argv):
 
-    test_wass_routine(str(argv[0]))
+    test_anim_routine(str(argv[0]))
 
 def test_wass_routine(dir):
 
