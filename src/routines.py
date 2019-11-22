@@ -158,3 +158,8 @@ class WassMatchAniRoutine(AniRoutine):
 
     def __init__(self,figure,plot_cood):
         super().__init__(figure,plot_cood)
+
+    def init_routine(self):
+        pass
+
+    
