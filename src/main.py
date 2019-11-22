@@ -8,9 +8,9 @@ import os
 
 def main(argv):
 
-    test_anim_routine(str(argv[0]))
+    test_wass_routine(str(argv[0]))
 
-def run_wass_routine(dir):
+def test_wass_routine(dir):
 
     sgf_files = []
     for files in os.listdir(dir):
@@ -18,7 +18,7 @@ def run_wass_routine(dir):
             sgf_files.append(os.path.join(dir,files)) #probably should create a routunes class to abstract his iteration stuff out
 
     for game_file_paths in sgf_files:
-        Analytics(game_file_paths).game_wdist()
+        StaticPlot(game_file_paths,WassRoutine).plot()
 
 def test_anim_routine(file):
 

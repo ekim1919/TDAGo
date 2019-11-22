@@ -1,21 +1,21 @@
 import os
 
-import matplotlib
 import matplotlib.pyplot as plt
 import matplotlib.animation as animate
 from matplotlib.widgets import Slider, TextBox
 import numpy as np
 
-matplotlib.use('webagg')
+from routines import *
 
-from goripser import *
-from persim import plot_diagrams
+#matplotlib.use('webagg')
+
+
 
 
 class PlotFSHandler: #Handles all parsing and file handling for plot printing
 
     def __init__(self,pathname):
-        self.plot_root_dir = "/Users/edwardkim/Work/TDAGo/testplots/"
+        self.plot_root_dir = "/playpen/ehkim/work/TDAGo/testplots/"
 
         dir_name = os.path.dirname(pathname)
         dir_name_index = dir_name.rfind('/')+1
@@ -165,30 +165,16 @@ class GameAnimator: #animates the persistence diagrams and board to see how game
         ani.save(self.save_loc + ".mp4",writer=writer) #save animation
 
 
+class StaticPlot: #Simply outputs one routine as a png plot
 
-
-class Analytics: #Simply outputs evolution of distance as a plot.
-
-    def __init__(self,pathname,start=0,finish=400):
-        self.disarr = DistanceArray(pathname,start,finish)
+    def __init__(self,pathname,routine,start=0,finish=400):
+        #assert
         self.save_loc = PlotFSHandler(pathname).get_save_loc()
-        self.name = os.path.split(pathname)[1]
-        self.start_num = start
-        self.finish_num = finish
+        self.figure = plt.Figure((20,20))
+        name = os.path.split(pathname)[1]
+        self.routine = routine(self.figure,111,pathname,start=start,finish=finish,name=name)
 
-    def game_wdist(self):
+    def plot(self): #We simply run the plotting routines and save them to disk
 
-        x,y = self.disarr.get_wass_array()
-
-        fig,ax = plt.subplots()
-        ax.plot(x,y,1)
-        ax.set(xlabel='Move #',ylabel='Wasserstein Dist',title="Plot Of WDist as " + self.name + " progresses")
-        plt.savefig(self.save_loc + ".png") #Save file in corresponding directory
-
-    def  game_bdist(self):
-
-        x,y = self.disarr.get_bottle_array()
-
-        ax.plot(x,y,1)
-        ax.set(xlabel='Move #',ylabel='Bottleneck Dist',title="Plot Of BDist as " + self.name + " progresses")
-        plt.savefig(self.save_loc + ".png") #Save file in corresponding directory
+        self.routine.run()
+        self.figure.savefig(self.save_loc + ".png") #Save file in corresponding directory
