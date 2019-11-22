@@ -20,6 +20,16 @@ def test_wass_routine(dir):
     for game_file_paths in sgf_files:
         StaticPlot(game_file_paths,WassRoutine).plot()
 
+def test_bottle_routine(dir):
+
+    sgf_files = []
+    for files in os.listdir(dir):
+        if files.endswith(".sgf"):
+            sgf_files.append(os.path.join(dir,files)) #probably should create a routunes class to abstract his iteration stuff out
+
+    for game_file_paths in sgf_files:
+        StaticPlot(game_file_paths,BottleRoutine).plot()
+
 def test_anim_routine(file):
 
     GameAnimator(file).animate()

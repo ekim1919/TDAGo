@@ -147,5 +147,14 @@ class MoveBoxRoutine(AniRoutine):
         super().__init__(figure,plot_cood)
         self.move_box = TextBox(self.ax,'Move #: ',0)
 
+    def init_routine(self):
+        pass
+
     def update(self,index):
         self.move_box.set_val(index)
+
+
+class WassMatchAniRoutine(AniRoutine):
+
+    def __init__(self,figure,plot_cood):
+        super().__init__(figure,plot_cood)
