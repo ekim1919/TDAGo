@@ -14,6 +14,8 @@ class SGFProcessor:
     def __init__(self,pathname):
         self.pathname = pathname
 
+        num_of_threads = 100
+
         with open(self.pathname, "rb") as f:
             sgf_src = f.read()
 
@@ -26,29 +28,46 @@ class SGFProcessor:
         except:
             raise Exception(str(e))
 
+        self.black_move_pos = []
+        self.white_move_pos = []
+
+        black_moves = np.empty([0,2]) #accumlator variables
+        white_moves = np.empty([0,2])
+
+        pool = Pool(processes=6)
+        process_results = [] #list of processes
+
+        for (color, move), num in zip(self.play_seq, range(self.num_of_moves())):
+                row, col = move
+                if (color == 'b'):
+                    black_moves = np.append(black_moves,[[row,col]],axis=0)
+                    process_results.append(pool.apply_async(self.cal_dgms,args=((num,color,black_moves),)))
+                else:
+                    white_moves = np.append(white_moves,[[row,col]],axis=0)
+                    process_results.append(pool.apply_async(self.cal_dgms,args=((num,color,white_moves),)))
+
+                self.black_move_pos.append(copy(black_moves)) #Using a lot of memory for the sake of convienence.
+                self.white_move_pos.append(copy(white_moves))
+        pool.close()
+        pool.join()
+
+        self.dgms_list = [p.get() for p in process_results]
+        self.dgms_list.sort()
+        self.empty_dgms = TDATools.filter_rips(np.empty([0,2]))
+
+    def cal_dgms(self, board_tup):
+        index, color, board = board_tup
+        return (index, color, TDATools.filter_rips(board))
+
     def num_of_moves(self): #Gives total number of moves in a game.
         return len(self.play_seq)
 
-    def filter_game(self, start_num, finish_num, stone_color=None):
+    def filter_game(self, start, finish):
 
-            plays = self.play_seq[:finish_num] #Slice play list by desired move number
-
-            move_list = zip(plays, range(finish_num)) #Iterator for sequence of moves and their indices
-            black_move_pos = np.empty([0,2])
-            white_move_pos = np.empty([0,2])
-
-            for (color, move), num in move_list:
-                row, col = move
-                if (color == 'b'):
-                    black_move_pos = np.append(black_move_pos,[[row,col]],axis=0)
-                else:
-                    white_move_pos = np.append(white_move_pos,[[row,col]],axis=0)
-
-                black_dgms = TDATools.filter_rips(black_move_pos)
-                white_dgms = TDATools.filter_rips(white_move_pos)
-
-                if num >= start_num: #Don't start iterating until we get to move of interest.
-                    yield (black_move_pos, white_move_pos), (black_dgms, white_dgms) #Given in double tuple format with board and dgms positions in that order
+            finish = min(finish, self.num_of_moves())
+            for i in range(start, finish):
+                j = max(0, i-1)
+                yield (self.black_move_pos[i], self.white_move_pos[i]), (self.dgms_list[i][2], self.dgms_list[j][2] if j > 0 else self.empty_dgms)
 
 class DistanceArray:
 
