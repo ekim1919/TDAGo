@@ -25,7 +25,6 @@ class StaticRoutine(Routine,ABC):
         pass
 
 class AniRoutine(Routine,ABC):
-
     @abstractmethod
     def init_routine(self):
         pass
@@ -95,10 +94,9 @@ class DGMSAniRoutine(AniRoutine):
         pass
 
     def update(self,dgms):
-        plt.sca(self.ax) #change active subplot to relevant one
-        plt.cla() #figure out how to use gca for this
+        self.ax.clear()
         self.ax.set_title(self.title)
-        plot_diagrams(dgms)
+        plot_diagrams(dgms,ax=self.ax)
 
 class BoardDrawRoutine(AniRoutine): #Only supports single color for now.
 
@@ -161,5 +159,3 @@ class WassMatchAniRoutine(AniRoutine):
 
     def init_routine(self):
         pass
-
-    

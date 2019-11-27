@@ -34,54 +34,47 @@ class SGFProcessor:
         self.black_move_pos = []
         self.white_move_pos = []
 
-        self.dgms_arr = [[-1,-1] for _ in range(self.num_of_moves())]
-
         black_moves = np.empty([0,2]) #accumlator variables
         white_moves = np.empty([0,2])
 
-        pool = Pool(6)
+        pool = Pool(processes=6)
+        process_results = [] #list of processes
 
         for (color, move), num in zip(self.play_seq, range(self.num_of_moves())):
                 row, col = move
                 if (color == 'b'):
                     black_moves = np.append(black_moves,[[row,col]],axis=0)
-                    pool.map(self.cal_dgms, [(num,'b', copy(black_moves))])
+                    process_results.append(pool.apply_async(self.cal_dgms,args=((num,color,black_moves),)))
                 else:
                     white_moves = np.append(white_moves,[[row,col]],axis=0)
-                    pool.map(self.cal_dgms, [(num,'w', copy(white_moves))])
+                    process_results.append(pool.apply_async(self.cal_dgms,args=((num,color,white_moves),)))
 
                 self.black_move_pos.append(copy(black_moves)) #Using a lot of memory for the sake of convienence.
                 self.white_move_pos.append(copy(white_moves))
-
         pool.close()
         pool.join()
 
+        self.dgms_list = [p.get() for p in process_results]
+        self.dgms_list.sort()
+        self.empty_dgms = TDATools.filter_rips(np.empty([0,2]))
+
     def cal_dgms(self, board_tup):
         index, color, board = board_tup
-        color_index = color_num[color]
-        self.dgms_arr[index][color_index] = TDATools.filter_rips(board)
+        return (index, color, TDATools.filter_rips(board))
 
     def num_of_moves(self): #Gives total number of moves in a game.
         return len(self.play_seq)
 
-    def filter_game(self, start, finish, stone_color=None):
+    def filter_game(self, start, finish):
 
             finish = min(finish, self.num_of_moves())
             for i in range(start, finish):
-
-                print(self.dgms_arr)
-
-                black_index = i - 1 if self.dgms_arr[i][0] == -1 else i
-                black_dgms = self.dgms_arr[black_index][0]
-
-                white_index = i - 1 if self.dgms_arr[i][1] == -1 else i
-                white_dgms = self.dgms_arr[white_index][1]
-
-                yield (self.black_move_pos[i], self.white_move_pos[i]), (black_dgms, white_dgms) #Given in double tuple format with board and dgms positions in that order
+                j = max(0, i-1)
+                yield (self.black_move_pos[i], self.white_move_pos[i]), (self.dgms_list[i][2], self.dgms_list[j][2] if j > 0 else self.empty_dgms)
 
 class DistanceArray:
 
-    def __init__(self,pathname,start,finish):
+    def __init__(self,pathname,start,finish): #Account for new arch
         self.start = start
         self.finish = finish
         self.proc = SGFProcessor(pathname)
