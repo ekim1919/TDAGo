@@ -2,11 +2,16 @@ from plot import *
 
 import sys
 import os
+import warnings
+warnings.filterwarnings("ignore") #Ignore warnings for now
+
+from experiments import *
 
 def main(argv):
 
-    test_scroll_routine(str(argv[0]))
-
+    #run_conn_routine(str(argv[0]))
+    predict_avg_experi(str(argv[0]))
+    
 def run_wass_routine(dir):
 
     sgf_files = []
@@ -17,9 +22,26 @@ def run_wass_routine(dir):
     for game_file_paths in sgf_files:
         Analytics(game_file_paths).game_wdist()
 
-def test_anim_routine(file):
+def run_conn_routine(dir):
 
-    GameAnimator(file).animate()
+    sgf_files = []
+    for files in os.listdir(dir):
+        if files.endswith(".sgf"):
+            sgf_files.append(os.path.join(dir,files)) #probably should create a routunes class to abstract his iteration stuff out
+
+    for game_file_paths in sgf_files:
+        Analytics(game_file_paths).game_avg_conn()
+
+def test_anim_routine(dir):
+
+    sgf_files = []
+    for files in os.listdir(dir):
+        if files.endswith(".sgf"):
+            sgf_files.append(os.path.join(dir,files)) #probably should create a routunes class to abstract his iteration stuff out
+
+    for game_file_paths in sgf_files:
+        GameAnimator(game_file_paths).animate()
+
 
 
 def test_scroll_routine(file):

@@ -31,7 +31,7 @@ class GameScroll:
     def __init__(self,pathname):
         self.pathname = pathname
         self.proc = SGFProcessor(pathname)
-        self.figure = plt.figure(figsize=(20,20))
+        self.figure = plt.figure(figsize=(10,10))
 
         self.white_board = self.figure.add_subplot(321)
         self.white_board.set_xticks(np.arange(20))
@@ -92,7 +92,7 @@ class GameAnimator: #animates the persistence diagrams and board to see how game
     def __init__(self,pathname):
         self.pathname = pathname
         self.proc = SGFProcessor(pathname)
-        self.figure = plt.figure(figsize=(30,30))
+        self.figure = plt.figure(figsize=(10,10))
 
         self.white_board = self.figure.add_subplot(321)
         self.white_board.set_xticks(np.arange(20))
@@ -113,20 +113,30 @@ class GameAnimator: #animates the persistence diagrams and board to see how game
         self.wdist = self.figure.add_subplot(325)
 
         self.save_loc = PlotFSHandler(pathname).get_save_loc()
+        self.draw_board(self.black_board)
+        self.draw_board(self.white_board)
+
+
+    def draw_board(self,ax):
+
+        for i in range(19):
+            ax.axhline(i,color="black")
+            ax.axvline(i,color="black")
+        ax.set_facecolor('burlywood')
 
     def update(self,data_tup,x,y,l):
         (black_stones, white_stones), (black_dgms,white_dgms) = data_tup[0]
         num = data_tup[1]
 
-        self.white_board.scatter(white_stones[:,0], white_stones[:,1], color='red') #anything more efficient then scattering it every time?
-        self.black_board.scatter(black_stones[:,0], black_stones[:,1],color='black')
+        self.white_board.scatter(white_stones[:,0], white_stones[:,1], color='red',s=250) #anything more efficient then scattering it every time?
+        self.black_board.scatter(black_stones[:,0], black_stones[:,1],color='black',s=250)
 
-        self.black_dgms = self.figure.add_subplot(324)
+        plt.sca(self.black_dgms)
         plt.cla()
         self.black_dgms.set_title('Black PH') #Terribly way of just referencing the plot and clearing the plot to update Persistence Diagrams. Dnot feel like wrestlin with matplotlib right now.
         plot_diagrams(black_dgms)
 
-        self.white_dgms = self.figure.add_subplot(322)
+        plt.sca(self.white_dgms)
         plt.cla()
         self.white_dgms.set_title('White PH')
         plot_diagrams(white_dgms)
@@ -143,17 +153,35 @@ class GameAnimator: #animates the persistence diagrams and board to see how game
         writer = Writer(fps=10,bitrate=-1)
         ani.save(self.save_loc + ".mp4",writer=writer) #save animation
 
-
-
-
 class Analytics: #Simply outputs evolution of distance as a plot.
 
     def __init__(self,pathname,start=0,finish=400):
         self.disarr = DistanceArray(pathname,start,finish)
+        self.pathname = pathname
         self.save_loc = PlotFSHandler(pathname).get_save_loc()
         self.name = os.path.split(pathname)[1]
         self.start_num = start
         self.finish_num = finish
+
+    def game_avg_conn(self):
+        proc = SGFProcessor(self.pathname)
+        black_conn = []
+        white_conn = []
+
+        for _, dgms in proc.filter_game(0,400):
+            black_h1, white_h1 = dgms[0][1], dgms[1][1]
+            black_mean, white_mean = np.mean(black_h1,axis=0), np.mean(white_h1,axis=0)
+            black_conn.append(black_mean[0])
+            white_conn.append(white_mean[0])
+        x = np.arange(proc.num_of_moves())
+
+        fig, ax = plt.subplots()
+        ax.plot(x,black_conn,color="black",label=proc.black_player)
+        ax.plot(x,white_conn,color="red",label=proc.white_player)
+        ax.legend()
+
+        ax.set(xlabel="Move #",ylabel="Avg Conn between groups",title="Plot Of Avg Conn as " + self.name + " progresses. (Winner:" + proc.winner + ")" )
+        plt.savefig(self.save_loc + "_conngraph.png")
 
     def game_wdist(self):
 
@@ -162,7 +190,7 @@ class Analytics: #Simply outputs evolution of distance as a plot.
         fig,ax = plt.subplots()
         ax.plot(x,y,1)
         ax.set(xlabel='Move #',ylabel='Wasserstein Dist',title="Plot Of WDist as " + self.name + " progresses")
-        plt.savefig(self.save_loc + ".png") #Save file in corresponding directory
+        plt.savefig(self.save_loc + "_wdist.png") #Save file in corresponding directory
 
     def  game_bdist(self):
 

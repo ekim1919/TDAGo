@@ -17,13 +17,32 @@ class SGFProcessor: #Takes SGF files and converts to TDA-ready data. Might be wo
             sgf_src = f.read()
 
         try:
-            sgf_game = sgf.Sgf_game.from_bytes(sgf_src)
+            self.sgf_game = sgf.Sgf_game.from_bytes(sgf_src)
         except:
             raise Exception("SGF file format error")
         try:
-            _ , self.play_seq = sgf_moves.get_setup_and_moves(sgf_game)
+            _ , self.play_seq = sgf_moves.get_setup_and_moves(self.sgf_game)
         except:
-            raise Exception(str(e))
+            raise Exception("")
+
+        self.initial_board = []
+
+        for i in range(19):
+            self.initial_board.append([0,i])
+            self.initial_board.append([18,i])
+            self.initial_board.append([i,0])
+            self.initial_board.append([i,18])
+
+    @property
+    def white_player(self):
+        return self.sgf_game.get_player_name("w")
+
+    @property
+    def black_player(self):
+        return self.sgf_game.get_player_name("b")
+    @property
+    def winner(self):
+        return self.sgf_game.get_winner()
 
     #Gives total number of moves in a game.
     def num_of_moves(self):
@@ -33,8 +52,8 @@ class SGFProcessor: #Takes SGF files and converts to TDA-ready data. Might be wo
 
             plays = self.play_seq[:finish_num] #Slice play list by desired move number
 
-            black_move_pos = np.empty([0,2])
-            white_move_pos = np.empty([0,2])
+            black_move_pos = np.asarray(self.initial_board)
+            white_move_pos = np.asarray(self.initial_board)
 
             move_list = zip(plays, range(finish_num)) #Iterator for sequence of moves and their indices
 
