@@ -10,44 +10,10 @@ from experiments import *
 def main(argv):
 
     #run_conn_routine(str(argv[0]))
-    predict_avg_experi(str(argv[0]))
-    
-def run_wass_routine(dir):
-
-    sgf_files = []
-    for files in os.listdir(dir):
-        if files.endswith(".sgf"):
-            sgf_files.append(os.path.join(dir,files)) #probably should create a routunes class to abstract his iteration stuff out
-
-    for game_file_paths in sgf_files:
-        Analytics(game_file_paths).game_wdist()
-
-def run_conn_routine(dir):
-
-    sgf_files = []
-    for files in os.listdir(dir):
-        if files.endswith(".sgf"):
-            sgf_files.append(os.path.join(dir,files)) #probably should create a routunes class to abstract his iteration stuff out
-
-    for game_file_paths in sgf_files:
-        Analytics(game_file_paths).game_avg_conn()
-
-def test_anim_routine(dir):
-
-    sgf_files = []
-    for files in os.listdir(dir):
-        if files.endswith(".sgf"):
-            sgf_files.append(os.path.join(dir,files)) #probably should create a routunes class to abstract his iteration stuff out
-
-    for game_file_paths in sgf_files:
-        GameAnimator(game_file_paths).animate()
-
-
-
-def test_scroll_routine(file):
-
-    GameScroll(file).scroll()
-
+    #predict_avg_experi(str(argv[0]),int(argv[1]))
+    test_save_routine(str(argv[0]))
+    #test_score_routine(str(argv[0]))
+    #$test_anim_routine(str(argv[0]))
 
 if __name__ == '__main__':
   main(sys.argv[1:])

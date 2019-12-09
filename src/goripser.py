@@ -43,6 +43,9 @@ class SGFProcessor: #Takes SGF files and converts to TDA-ready data. Might be wo
     @property
     def winner(self):
         return self.sgf_game.get_winner()
+    @property
+    def winner_name(self):
+        return self.sgf_game.get_player_name(self.sgf_game.get_winner())
 
     #Gives total number of moves in a game.
     def num_of_moves(self):

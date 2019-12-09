@@ -8,11 +8,14 @@ import numpy as np
 from goripser import *
 from persim import plot_diagrams
 
+from multiprocessing import Pool
+from copy import copy
+
 
 class PlotFSHandler: #Handles all parsing and file handling for plot printing
 
     def __init__(self,pathname):
-        self.plot_root_dir = "/Users/edwardkim/Work/TDAGo/testplots/"
+        self.plot_root_dir = os.path.join(os.environ['HOME'], "/Work/TDAGo/testplots/")
 
         dir_name = os.path.dirname(pathname)
         dir_name_index = dir_name.rfind('/')+1
@@ -92,7 +95,7 @@ class GameAnimator: #animates the persistence diagrams and board to see how game
     def __init__(self,pathname):
         self.pathname = pathname
         self.proc = SGFProcessor(pathname)
-        self.figure = plt.figure(figsize=(10,10))
+        self.figure = plt.figure(figsize=(20,20))
 
         self.white_board = self.figure.add_subplot(321)
         self.white_board.set_xticks(np.arange(20))
@@ -147,11 +150,76 @@ class GameAnimator: #animates the persistence diagrams and board to see how game
     def animate(self):
         x,y = (DistanceArray(self.pathname,0,400)).get_wass_array()
         l, = self.wdist.plot(x,y)
+        self.wdist.set_title("WDist between Black and White")
         ani = animate.FuncAnimation(self.figure,self.update,frames=zip(self.proc.filter_game(0,400),range(400)), fargs=[x,y,l],save_count=400)
 
         Writer = animate.writers['ffmpeg']
         writer = Writer(fps=10,bitrate=-1)
         ani.save(self.save_loc + ".mp4",writer=writer) #save animation
+
+class SaveGameProg: #animates the persistence diagrams and board to see how game progresses
+
+    def __init__(self,pathname):
+        self.pathname = pathname
+        self.proc = SGFProcessor(pathname)
+        self.figure = plt.figure(figsize=(20,20))
+
+        self.white_board = self.figure.add_subplot(321)
+        self.white_board.set_xticks(np.arange(20))
+        self.white_board.set_yticks(np.arange(20))
+        self.white_board.set_title('White Stone Positions')
+
+        self.white_dgms = self.figure.add_subplot(322)
+        self.white_dgms.set_title('White PH')
+
+        self.black_board = self.figure.add_subplot(323) #Make plots wider for better visibility
+        self.black_board.set_xticks(np.arange(20))
+        self.black_board.set_yticks(np.arange(20))
+        self.black_board.set_title('Black Stone Positions')
+
+        self.black_dgms = self.figure.add_subplot(324)
+        self.black_dgms.set_title('Black PH')
+
+        self.save_loc = PlotFSHandler(pathname).get_save_loc()
+        self.draw_board(self.black_board)
+        self.draw_board(self.white_board)
+
+
+    def draw_board(self,ax):
+
+        for i in range(19):
+            ax.axhline(i,color="black")
+            ax.axvline(i,color="black")
+        ax.set_facecolor('burlywood')
+
+    def update(self,data_tup):
+        (black_stones, white_stones), (black_dgms,white_dgms) = data_tup
+
+        self.white_board.scatter(white_stones[:,0], white_stones[:,1], color='red',s=150) #anything more efficient then scattering it every time?
+        self.black_board.scatter(black_stones[:,0], black_stones[:,1],color='black',s=150)
+
+        plt.sca(self.black_dgms)
+        plt.cla()
+        self.black_dgms.set_title('Black PH') #Terribly way of just referencing the plot and clearing the plot to update Persistence Diagrams. Dnot feel like wrestlin with matplotlib right now.
+        plot_diagrams(black_dgms)
+
+        plt.sca(self.white_dgms)
+        plt.cla()
+        self.white_dgms.set_title('White PH')
+        plot_diagrams(white_dgms)
+
+    def plot(self):
+
+        if(not os.path.isdir(self.save_loc)):
+            os.mkdir(self.save_loc)
+
+        #pool = Pool(processes=6)
+        for data_tup, num in zip(self.proc.filter_game(0,400),range(400)):
+            self.update(data_tup)
+            self.figure.savefig(os.path.join(self.save_loc,str(num) + ".png"))
+            #pool.apply(fig.savefig, args=(os.path.join(self.save_loc,str(num) + ".png"),))
+        #pool.close()
+        #pool.join()
 
 class Analytics: #Simply outputs evolution of distance as a plot.
 
@@ -180,8 +248,36 @@ class Analytics: #Simply outputs evolution of distance as a plot.
         ax.plot(x,white_conn,color="red",label=proc.white_player)
         ax.legend()
 
-        ax.set(xlabel="Move #",ylabel="Avg Conn between groups",title="Plot Of Avg Conn as " + self.name + " progresses. (Winner:" + proc.winner + ")" )
+        ax.set(xlabel="Move #",ylabel="Avg Distance of detected groups",title="Plot Of Avg Distance  as " + self.name + " progresses. (Winner:" + proc.winner_name + ")" )
         plt.savefig(self.save_loc + "_conngraph.png")
+
+    def game_scoring(self):
+
+        def score(h1_dgms):
+            acc = 0
+            for i in h1_dgms:
+                d = i[1]
+                b = i[0]
+                # acc +=
+            return acc
+
+        proc = SGFProcessor(self.pathname)
+        black_score = []
+        white_score = []
+        x = np.arange(proc.num_of_moves())
+
+        for _, dgms in proc.filter_game(0,400):
+            black_h1, white_h1 = dgms[0][1], dgms[1][1]
+            black_score.append(score(black_h1))
+            white_score.append(score(white_h1))
+
+        fig, ax = plt.subplots()
+        ax.plot(x,black_score,color="black",label=proc.black_player)
+        ax.plot(x,white_score,color="red",label=proc.white_player)
+        ax.legend()
+
+        ax.set(xlabel="Move #",ylabel="Score",title="Plot Of Score as " + self.name + " progresses. (Winner:" + proc.winner + ")" )
+        plt.savefig(self.save_loc + "_scoregraph.png")
 
     def game_wdist(self):
 
