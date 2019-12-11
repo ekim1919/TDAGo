@@ -20,13 +20,35 @@ class SGFProcessor:
             sgf_src = f.read()
 
         try:
-            sgf_game = sgf.Sgf_game.from_bytes(sgf_src)
+            self.sgf_game = sgf.Sgf_game.from_bytes(sgf_src)
         except:
             raise Exception("SGF file format error")
         try:
-            _ , self.play_seq = sgf_moves.get_setup_and_moves(sgf_game)
+            _ , self.play_seq = sgf_moves.get_setup_and_moves(self.sgf_game)
         except:
-            raise Exception(str(e))
+            raise Exception("")
+
+        self.initial_board = []
+
+        for i in range(19):
+            self.initial_board.append([0,i])
+            self.initial_board.append([18,i])
+            self.initial_board.append([i,0])
+            self.initial_board.append([i,18])
+
+    @property
+    def white_player(self):
+        return self.sgf_game.get_player_name("w")
+
+    @property
+    def black_player(self):
+        return self.sgf_game.get_player_name("b")
+    @property
+    def winner(self):
+        return self.sgf_game.get_winner()
+    @property
+    def winner_name(self):
+        return self.sgf_game.get_player_name(self.sgf_game.get_winner())
 
         self.black_move_pos = []
         self.white_move_pos = []
@@ -36,6 +58,9 @@ class SGFProcessor:
 
         pool = Pool(processes=6)
         process_results = [] #list of processes
+
+        black_move_pos = np.asarray(self.initial_board)
+        white_move_pos = np.asarray(self.initial_board)
 
         for (color, move), num in zip(self.play_seq, range(self.num_of_moves())):
                 row, col = move

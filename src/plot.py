@@ -7,12 +7,14 @@ import numpy as np
 
 from routines import *
 
-#matplotlib.use('webagg')
+from multiprocessing import Pool
+from copy import copy
 
 class PlotFSHandler: #Handles all parsing and file handling for plot printing
 
     def __init__(self,pathname):
-        self.plot_root_dir = "/playpen/ehkim/work/TDAGo/testplots/"
+
+        self.plot_root_dir = os.path.join(os.environ['HOME'], "/Work/TDAGo/testplots/")
 
         dir_name = os.path.dirname(pathname)
         dir_name_index = dir_name.rfind('/')+1
@@ -73,8 +75,8 @@ class StaticPlot: #Simply outputs one routine as a png plot
         self.routine.run()
         self.figure.savefig(self.save_loc + ".png") #Save file in corresponding directory
 
-"""
-class GameScroll:
+
+class SaveGameProg: #animates the persistence diagrams and board to see how game progresses
 
     def __init__(self,pathname):
         self.pathname = pathname
@@ -97,41 +99,117 @@ class GameScroll:
         self.black_dgms = self.figure.add_subplot(324)
         self.black_dgms.set_title('Black PH')
 
-        self.wdist = self.figure.add_subplot(325)
-        self.scroller = self.figure.add_subplot(326)
-
-        self.x, self.y = (DistanceArray(self.pathname,0,400)).get_wass_array()
-        self.l, = self.wdist.plot(self.x,self.y) #A lot of attributes. Should simplify this stuff sometime later if possible
-
         self.save_loc = PlotFSHandler(pathname).get_save_loc()
+        self.draw_board(self.black_board)
+        self.draw_board(self.white_board)
 
-    def update(self,val):
-        val = int(val)
-        (black_stones, white_stones), (black_dgms,white_dgms) = self.get_move(val) #Someday figureout a caching solution to alleviate speed slowdown.
+    def draw_board(self,ax):
 
-        self.white_board.clear()
-        self.white_board.scatter(white_stones[:,0], white_stones[:,1], color='red') #anything more efficient then scattering it every time?
-        self.black_board.clear()
-        self.black_board.scatter(black_stones[:,0], black_stones[:,1],color='black')
+        for i in range(19):
+            ax.axhline(i,color="black")
+            ax.axvline(i,color="black")
+        ax.set_facecolor('burlywood')
 
-        self.black_dgms = self.figure.add_subplot(324)
+    def update(self,data_tup):
+        (black_stones, white_stones), (black_dgms,white_dgms) = data_tup
+
+        self.white_board.scatter(white_stones[:,0], white_stones[:,1], color='red',s=150) #anything more efficient then scattering it every time?
+        self.black_board.scatter(black_stones[:,0], black_stones[:,1],color='black',s=150)
+
+        plt.sca(self.black_dgms)
         plt.cla()
         self.black_dgms.set_title('Black PH') #Terribly way of just referencing the plot and clearing the plot to update Persistence Diagrams. Dnot feel like wrestlin with matplotlib right now.
         plot_diagrams(black_dgms)
 
-        self.white_dgms = self.figure.add_subplot(322)
+        plt.sca(self.white_dgms)
         plt.cla()
         self.white_dgms.set_title('White PH')
         plot_diagrams(white_dgms)
 
-        self.l.set_data(self.x[:val],self.y[:val])
+    def plot(self):
 
-    def get_move(self,move_num): #Get dgms,board config for after single desired move
-        return next(self.proc.filter_game(move_num,move_num+1))
+        if(not os.path.isdir(self.save_loc)):
+            os.mkdir(self.save_loc)
 
-    def scroll(self):
+        #pool = Pool(processes=6)
+        for data_tup, num in zip(self.proc.filter_game(0,400),range(400)):
+            self.update(data_tup)
+            self.figure.savefig(os.path.join(self.save_loc,str(num) + ".png"))
+            #pool.apply(fig.savefig, args=(os.path.join(self.save_loc,str(num) + ".png"),))
+        #pool.close()
+        #pool.join()
 
-        spos = Slider(self.scroller,'Move #',1,self.proc.num_of_moves(),valstep=1)
-        spos.on_changed(self.update)
-        plt.show()
-"""
+class Analytics: #Simply outputs evolution of distance as a plot.
+
+    def __init__(self,pathname,start=0,finish=400):
+        self.disarr = DistanceArray(pathname,start,finish)
+        self.pathname = pathname
+        self.save_loc = PlotFSHandler(pathname).get_save_loc()
+        self.name = os.path.split(pathname)[1]
+        self.start_num = start
+        self.finish_num = finish
+
+    def game_avg_conn(self):
+        proc = SGFProcessor(self.pathname)
+        black_conn = []
+        white_conn = []
+
+        for _, dgms in proc.filter_game(0,400):
+            black_h1, white_h1 = dgms[0][1], dgms[1][1]
+            black_mean, white_mean = np.mean(black_h1,axis=0), np.mean(white_h1,axis=0)
+            black_conn.append(black_mean[0])
+            white_conn.append(white_mean[0])
+        x = np.arange(proc.num_of_moves())
+
+        fig, ax = plt.subplots()
+        ax.plot(x,black_conn,color="black",label=proc.black_player)
+        ax.plot(x,white_conn,color="red",label=proc.white_player)
+        ax.legend()
+
+        ax.set(xlabel="Move #",ylabel="Avg Distance of detected groups",title="Plot Of Avg Distance  as " + self.name + " progresses. (Winner:" + proc.winner_name + ")" )
+        plt.savefig(self.save_loc + "_conngraph.png")
+
+    def game_scoring(self):
+
+        def score(h1_dgms):
+            acc = 0
+            for i in h1_dgms:
+                d = i[1]
+                b = i[0]
+                # acc +=
+            return acc
+
+        proc = SGFProcessor(self.pathname)
+        black_score = []
+        white_score = []
+        x = np.arange(proc.num_of_moves())
+
+        for _, dgms in proc.filter_game(0,400):
+            black_h1, white_h1 = dgms[0][1], dgms[1][1]
+            black_score.append(score(black_h1))
+            white_score.append(score(white_h1))
+
+        fig, ax = plt.subplots()
+        ax.plot(x,black_score,color="black",label=proc.black_player)
+        ax.plot(x,white_score,color="red",label=proc.white_player)
+        ax.legend()
+
+        ax.set(xlabel="Move #",ylabel="Score",title="Plot Of Score as " + self.name + " progresses. (Winner:" + proc.winner + ")" )
+        plt.savefig(self.save_loc + "_scoregraph.png")
+
+    def game_wdist(self):
+
+        x,y = self.disarr.get_wass_array()
+
+        fig,ax = plt.subplots()
+        ax.plot(x,y,1)
+        ax.set(xlabel='Move #',ylabel='Wasserstein Dist',title="Plot Of WDist as " + self.name + " progresses")
+        plt.savefig(self.save_loc + "_wdist.png") #Save file in corresponding directory
+
+    def  game_bdist(self):
+
+        x,y = self.disarr.get_bottle_array()
+
+        ax.plot(x,y,1)
+        ax.set(xlabel='Move #',ylabel='Bottleneck Dist',title="Plot Of BDist as " + self.name + " progresses")
+        plt.savefig(self.save_loc + ".png") #Save file in corresponding directory

@@ -1,34 +1,17 @@
 from plot import *
-
 import warnings
 warnings.filterwarnings("ignore") #Ignore warnings for now
-
 import sys
 import os
+from experiments import *
 
 def main(argv):
 
-    test_anim_routine(str(argv[0]))
-
-def test_wass_routine(dir):
-
-    sgf_files = []
-    for files in os.listdir(dir):
-        if files.endswith(".sgf"):
-            sgf_files.append(os.path.join(dir,files)) #probably should create a routunes class to abstract his iteration stuff out
-
-    for game_file_paths in sgf_files:
-        StaticPlot(game_file_paths,WassRoutine).plot()
-
-def test_anim_routine(file):
-
-    GameAnimator(file).animate()
-
-
-def test_scroll_routine(file):
-
-    GameScroll(file).scroll()
-
+    #run_conn_routine(str(argv[0]))
+    #predict_avg_experi(str(argv[0]),int(argv[1]))
+    test_save_routine(str(argv[0]))
+    #test_score_routine(str(argv[0]))
+    #$test_anim_routine(str(argv[0]))
 
 if __name__ == '__main__':
   main(sys.argv[1:])
