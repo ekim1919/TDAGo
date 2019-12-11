@@ -1,0 +1,28 @@
+\begin{thebibliography}{1}
+
+\bibitem{bays}
+D.~Stern, R.~Herbrich, and T.~Graepel, ``Bayesian pattern ranking for move
+  prediction in the game of go,'' {\em Proceedings of the 23rd International
+  Conference on Machine Learning}, 2006.
+
+\bibitem{muller}
+M.~M{\"u}ller, ``Computer go,'' {\em Elsevier: Artificial Intelligence},
+  vol.~134, pp.~145--179, 2002.
+
+\bibitem{alpha}
+D.~Silver, J.~Schrittwieser, K.~Simonyan, I.~Antonoglou, A.~Huang, A.~Guez,
+  T.~Hubert, L.~Baker, M.~Lai, A.~Bolton, Y.~Chen, T.~Lillicrap, F.~Hui,
+  L.~Sifre, G.~van~den Driessche, T.~Graepel, and D.~Hassabis, ``Mastering the
+  game of go without human knowledge,'' {\em Nature}, vol.~550, no.~7676,
+  pp.~354--359, 2017.
+
+\bibitem{tdago}
+E.~Kim, ``Tdago github repository.'' \url{https://github.com/ekim1919/TDAGo}.
+
+\bibitem{fox}
+``Foxdb github repository.'' \url{https://github.com/featurecat/go-dataset}.
+
+\bibitem{alphalib}
+``Alphago game archive.'' \url{https://www.alphago-games.com}.
+
+\end{thebibliography}
