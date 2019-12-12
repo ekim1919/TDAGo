@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019) (preloaded format=pdflatex 2019.10.19)  11 DEC 2019 22:53
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019) (preloaded format=pdflatex 2019.10.19)  12 DEC 2019 00:01
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -423,47 +423,48 @@ File: ./images/eyes1.png Graphic file (type png)
 <use ./images/eyes1.png>
 Package pdftex.def Info: ./images/eyes1.png  used on input line 51.
 (pdftex.def)             Requested size: 112.92159pt x 112.92159pt.
-<./images/ko1.png, id=61, 200.75pt x 100.375pt>
+ [2 <./images/lib1.png>]
+<./images/ko1.png, id=71, 200.75pt x 100.375pt>
 File: ./images/ko1.png Graphic file (type png)
 <use ./images/ko1.png>
 Package pdftex.def Info: ./images/ko1.png  used on input line 60.
 (pdftex.def)             Requested size: 150.56212pt x 75.28105pt.
- [2 <./images/lib1.png>] [3 <./images/eyes1.png> <./images/ko1.png>]
-<./images/lsd1.png, id=85, 289.08pt x 209.18352pt>
+ [3 <./images/eyes1.png> <./images/ko1.png>]
+<./images/lsd1.png, id=87, 289.08pt x 209.18352pt>
 File: ./images/lsd1.png Graphic file (type png)
 <use ./images/lsd1.png>
 Package pdftex.def Info: ./images/lsd1.png  used on input line 85.
 (pdftex.def)             Requested size: 289.07928pt x 209.183pt.
  [4 <./images/lsd1.png>]
-<./images/conn1.png, id=96, 250.9375pt x 250.9375pt>
+<./images/conn1.png, id=98, 250.9375pt x 250.9375pt>
 File: ./images/conn1.png Graphic file (type png)
 <use ./images/conn1.png>
 Package pdftex.def Info: ./images/conn1.png  used on input line 104.
 (pdftex.def)             Requested size: 125.46843pt x 125.46843pt.
 [5 <./images/conn1.png>]
-<./images/lsdconn1.png, id=107, 462.528pt x 346.896pt>
+<./images/lsdconn1.png, id=109, 462.528pt x 346.896pt>
 File: ./images/lsdconn1.png Graphic file (type png)
 <use ./images/lsdconn1.png>
 Package pdftex.def Info: ./images/lsdconn1.png  used on input line 113.
 (pdftex.def)             Requested size: 231.26343pt x 173.44757pt.
  [6 <./images/lsdconn1.png>] [7]
-<./images/alphaconn1.png, id=129, 462.528pt x 346.896pt>
+<./images/alphaconn1.png, id=130, 462.528pt x 346.896pt>
 File: ./images/alphaconn1.png Graphic file (type png)
 <use ./images/alphaconn1.png>
 Package pdftex.def Info: ./images/alphaconn1.png  used on input line 178.
 (pdftex.def)             Requested size: 231.26343pt x 173.44757pt.
-<./images/counter1.png, id=132, 401.5pt x 301.125pt>
+<./images/counter1.png, id=133, 401.5pt x 301.125pt>
 File: ./images/counter1.png Graphic file (type png)
 <use ./images/counter1.png>
 Package pdftex.def Info: ./images/counter1.png  used on input line 189.
 (pdftex.def)             Requested size: 321.20042pt x 240.90031pt.
- [8 <./images/alphaconn1.png>]
-<./images/seki1.png, id=140, 250.9375pt x 250.9375pt>
+ [8 <./images/alphaconn1.png>] [9 <./images/counter1.png>]
+<./images/seki1.png, id=148, 250.9375pt x 250.9375pt>
 File: ./images/seki1.png Graphic file (type png)
 <use ./images/seki1.png>
 Package pdftex.def Info: ./images/seki1.png  used on input line 200.
 (pdftex.def)             Requested size: 150.56364pt x 150.56364pt.
- [9 <./images/counter1.png>] [10 <./images/seki1.png>] (./final.bbl)
+ [10 <./images/seki1.png>] (./final.bbl)
 Package atveryend Info: Empty hook `BeforeClearDocument' on input line 219.
 
 [11]
@@ -478,11 +479,11 @@ Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 219.
 Here is how much of TeX's memory you used:
  6943 strings out of 493610
  99068 string characters out of 6159292
- 196028 words of memory out of 5000000
+ 196016 words of memory out of 5000000
  10975 multiletter control sequences out of 15000+600000
  11251 words of font info for 43 fonts, out of 8000000 for 9000
  319 hyphenation exceptions out of 8191
- 31i,8n,34p,1772b,395s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 31i,8n,34p,1795b,393s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/local/texlive/2019basic/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx1
 2.pfb></usr/local/texlive/2019basic/texmf-dist/fonts/type1/public/amsfonts/cm/c
 mex10.pfb></usr/local/texlive/2019basic/texmf-dist/fonts/type1/public/amsfonts/
@@ -495,10 +496,10 @@ ublic/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2019basic/texmf-dist/fonts/typ
 e1/public/amsfonts/cm/cmsy8.pfb></usr/local/texlive/2019basic/texmf-dist/fonts/
 type1/public/amsfonts/cm/cmti10.pfb></usr/local/texlive/2019basic/texmf-dist/fo
 nts/type1/public/amsfonts/cm/cmtt10.pfb>
-Output written on final.pdf (11 pages, 1148467 bytes).
+Output written on final.pdf (11 pages, 1159560 bytes).
 PDF statistics:
- 212 PDF objects out of 1000 (max. 8388607)
- 168 compressed objects within 2 object streams
+ 214 PDF objects out of 1000 (max. 8388607)
+ 170 compressed objects within 2 object streams
  41 named destinations out of 1000 (max. 500000)
  110 words of extra memory for PDF output out of 10000 (max. 10000000)
 

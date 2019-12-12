@@ -1,12 +1,12 @@
 # Fdb version 3
-["bibtex final"] 1576122244 "final.aux" "final.bbl" "final" 1576122799
+["bibtex final"] 1576125530 "final.aux" "final.bbl" "final" 1576126987
   "/usr/local/texlive/2019basic/texmf-dist/bibtex/bst/base/ieeetr.bst" 1292289607 18361 1a00e58565e7f19bf2b3e1bfb82254ae ""
   "biblo.bib" 1576037034 2281 8cc29b8ecdb4593240ab0f13971398a2 ""
-  "final.aux" 1576122799 5408 9c55fe4b981ab8641f86d796c245af36 "pdflatex"
+  "final.aux" 1576126911 5401 f4f97a05ff1974f1444543ba4f18eb29 "pdflatex"
   (generated)
-  "final.blg"
   "final.bbl"
-["pdflatex"] 1576122799 "final.tex" "final.pdf" "final" 1576122799
+  "final.blg"
+["pdflatex"] 1576126910 "final.tex" "final.pdf" "final" 1576126987
   "/usr/local/texlive/2019basic/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm" 1246382020 1004 54797486969f23fa377b128694d548df ""
   "/usr/local/texlive/2019basic/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex8.tfm" 1246382020 988 bdf658c3bfc2d96d3c8b02cfc1c94c20 ""
   "/usr/local/texlive/2019basic/texmf-dist/fonts/tfm/public/amsfonts/symbols/msam10.tfm" 1246382020 916 f87d7c45f9c908e672703b83b72241a3 ""
@@ -85,21 +85,21 @@
   "/usr/local/texlive/2019basic/texmf-var/fonts/map/pdftex/updmap/pdftex.map" 1570846878 79149 854342adfb9e2b04ef5f3774c4b99b04 ""
   "/usr/local/texlive/2019basic/texmf-var/web2c/pdftex/pdflatex.fmt" 1571522870 2708373 636b575a08d15d78eab8dd050104f1f5 ""
   "/usr/local/texlive/2019basic/texmf.cnf" 1570846878 628 6cfff46d1fd9ae1d47a88551035aa162 ""
-  "final.aux" 1576122799 5408 9c55fe4b981ab8641f86d796c245af36 "pdflatex"
-  "final.bbl" 1576122244 1095 f51a20cf7197d87e3cd6fafa82faad5f "bibtex final"
-  "final.out" 1576122799 457 969727d91d63cd778be8d262ca4686e1 "pdflatex"
-  "final.tex" 1576122798 24806 80c16dfb318b9f138d041e3016541374 ""
+  "final.aux" 1576126911 5401 f4f97a05ff1974f1444543ba4f18eb29 "pdflatex"
+  "final.bbl" 1576125530 1095 f51a20cf7197d87e3cd6fafa82faad5f "bibtex final"
+  "final.out" 1576126911 457 969727d91d63cd778be8d262ca4686e1 "pdflatex"
+  "final.tex" 1576126986 25163 05a4534470ad6ea4cc5090c93369f1f5 ""
   "images/alphaconn1.png" 1576036303 42021 6bbafd0e6fbda96ea7eb543ead8825fa ""
   "images/conn1.png" 1576037034 110407 aee0ecf1ebe8a018e58862df6d67b1e3 ""
   "images/counter1.png" 1576112503 205495 c2bd917f720318bc2c81a28f078ab76a ""
   "images/eyes1.png" 1576110589 38829 d930c7622ec5376b84044cdc28d55bd3 ""
-  "images/ko1.png" 1576116709 108716 7296a8b7f6e6d8b6d123b5a9045be856 ""
+  "images/ko1.png" 1576125041 114459 e997bb4020fb7ac5650264b4284a7dcc ""
   "images/lib1.png" 1576037034 13585 9f57c1875e50a11b6e0dbaaeadbe48fa ""
   "images/lsd1.png" 1576037034 175931 e693c289070dc81e3b70c5d7d3d20180 ""
   "images/lsdconn1.png" 1576036303 41805 9744d642a52c0493719b6d3ce555b969 ""
   "images/seki1.png" 1576115558 403123 1090212090b0471c4ff5306fd22c2c9a ""
   (generated)
-  "final.log"
   "final.aux"
-  "final.out"
   "final.pdf"
+  "final.log"
+  "final.out"
