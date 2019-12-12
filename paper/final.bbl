@@ -16,6 +16,10 @@ D.~Silver, J.~Schrittwieser, K.~Simonyan, I.~Antonoglou, A.~Huang, A.~Guez,
   game of go without human knowledge,'' {\em Nature}, vol.~550, no.~7676,
   pp.~354--359, 2017.
 
+\bibitem{terms}
+``Sensei's library.'' \url{https://senseis.xmp.net}.
+\newblock Accessed: 2019-10-28.
+
 \bibitem{tdago}
 E.~Kim, ``Tdago github repository.'' \url{https://github.com/ekim1919/TDAGo}.
 
