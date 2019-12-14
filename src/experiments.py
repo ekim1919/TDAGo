@@ -6,7 +6,6 @@ from multiprocessing import Pool, Manager, Lock
 
 import os
 
-
 def predict_avg_experi(dir,limit):
 
     sgf_files = []
@@ -63,7 +62,6 @@ def worker_conn(game_file_paths):
     Analytics(game_file_paths).game_avg_conn()
 
 def run_conn_routine(dir):
-
     sgf_files = []
     for files in os.listdir(dir):
         if files.endswith(".sgf"):
@@ -72,7 +70,6 @@ def run_conn_routine(dir):
     #pool = Pool(processes=6)
     for game_file_paths in sgf_files:
         worker_conn(game_file_paths)
-
     #pool.close()
     #pool.join()
 
@@ -81,7 +78,7 @@ def test_anim_routine(dir):
     sgf_files = []
     for files in os.listdir(dir):
         if files.endswith(".sgf"):
-            sgf_files.append(os.path.join(dir,files)) #probably should create a routunes class to abstract his iteration stuff out
+            sgf_files.append(os.path.join(dir,files))
 
     for game_file_paths in sgf_files:
     """
@@ -91,7 +88,7 @@ def test_save_routine(dir):
     sgf_files = []
     for files in os.listdir(dir):
         if files.endswith(".sgf"):
-            sgf_files.append(os.path.join(dir,files)) #probably should create a routunes class to abstract his iteration stuff out
+            sgf_files.append(os.path.join(dir,files))
 
     for game_file_paths in sgf_files:
         SaveGameProg(game_file_paths).plot()
@@ -101,11 +98,10 @@ def test_score_routine(dir):
     sgf_files = []
     for files in os.listdir(dir):
         if files.endswith(".sgf"):
-            sgf_files.append(os.path.join(dir,files)) #probably should create a routunes class to abstract his iteration stuff out
+            sgf_files.append(os.path.join(dir,files))
 
     for game_file_paths in sgf_files:
         Analytics(game_file_paths).game_scoring()
 
 def test_scroll_routine(file):
-
     GameScroll(file).scroll()
